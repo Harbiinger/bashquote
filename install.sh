@@ -1,3 +1,4 @@
+#!/bin/bash
 mkdir -p $HOME/bin
 cp biblequote.sh $HOME/bin/
 chmod +x $HOME/bin/biblequote.sh
