@@ -1,4 +1,5 @@
 # BibleQuote
+Print a quote from the bible when you open a terminal.
 
 ## Installation
 ```
