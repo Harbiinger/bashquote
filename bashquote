@@ -1,0 +1,35 @@
+#!/bin/bash
+path="$HOME/.config/bashquote/"
+
+if [[ $1 == "help" ]] then
+    echo "bashquote help       : show help"
+    echo "bashquote list       : list all available quotes files"
+    echo "bashquote set <name> : change the quotes file"
+fi
+
+if [[ $1 == "list" ]] then
+    for f in $(ls $path); do
+        echo " - ${f%.*}"
+    done
+fi
+
+if [[ $1 == "set" ]] then
+    if [[ -f $path/$2.txt ]] then
+        bashrc=$(grep -o -m 1 "bashquote" $HOME/.bashrc)
+        if [[ "" == $bashrc ]] then
+            echo "writing config in your .bashrc" 
+            echo "# managed by bashquote" >> $HOME/.bashrc
+            echo "QUOTEFILE=$2.txt" >> $HOME/.bashrc
+            echo "QUOTE=\$(shuf -n 1 \$HOME/.config/bashquote/\$QUOTEFILE)" >> $HOME/.bashrc
+            echo "COLUMNS=\$(tput cols)" >> $HOME/.bashrc
+            echo "printf \"\n%*s\n\n\" \$(((\${#QUOTE}+\$COLUMNS)/2)) \"✝ \$QUOTE ✝\"" >> $HOME/.bashrc
+        else 
+            line=$(awk '/QUOTEFILE=/{ print NR; exit }' $HOME/.bashrc) 
+            sed -iE "$line s/QUOTEFILE=\(.*\)/QUOTEFILE=$2.txt/g" $HOME/.bashrc
+            echo "Quotes file has been changed."
+        fi
+    else
+        echo "$2 is not a valid quotes file."
+        echo "Do \"bashquote list\" to see existing quotes file."
+    fi
+fi
