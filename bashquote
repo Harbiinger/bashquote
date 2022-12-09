@@ -3,8 +3,10 @@ path="$HOME/.config/bashquote/"
 
 if [[ $1 == "help" ]] then
     echo "bashquote help       : show help"
+    echo "bashquote set <name> : select a quotes file"
     echo "bashquote list       : list all available quotes files"
-    echo "bashquote set <name> : change the quotes file"
+    echo "note: you can add your quotes files with a .txt extension in ~/.config/bashquote/"
+    echo "      each quote must be on a single line"
 fi
 
 if [[ $1 == "list" ]] then
