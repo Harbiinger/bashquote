@@ -1,9 +1,9 @@
-# BibleQuote
-Print a quote from the bible when you open a terminal.
+# bashquote
+Print a quote when you open a terminal.
 
 ## Installation
 ```
-git clone https://github.com/Harbiinger/BibleQuote.git && cd BibleQuote
+git clone https://github.com/Harbiinger/bashquote.git && cd bashquote
 ./install.sh
 ```
 
