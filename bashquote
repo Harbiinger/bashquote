@@ -1,12 +1,17 @@
 #!/bin/bash
 path="$HOME/.config/bashquote/"
 
+if [[ $1 == "" ]] then
+    bashquote help
+fi
+
 if [[ $1 == "help" ]] then
     echo "bashquote help       : show help"
     echo "bashquote set <name> : select a quotes file"
     echo "bashquote list       : list all available quotes files"
     echo "note: you can add your quotes files with a .txt extension in ~/.config/bashquote/"
     echo "      each quote must be on a single line"
+    echo "      the first line of the file is reserved for the symbol that will be used as a prefix and suffix"
 fi
 
 if [[ $1 == "list" ]] then
@@ -22,9 +27,10 @@ if [[ $1 == "set" ]] then
             echo "writing config in your .bashrc" 
             echo "# managed by bashquote" >> $HOME/.bashrc
             echo "QUOTEFILE=$2.txt" >> $HOME/.bashrc
-            echo "QUOTE=\$(shuf -n 1 \$HOME/.config/bashquote/\$QUOTEFILE)" >> $HOME/.bashrc
+            echo "SYMBOL=\$(head -n 1 \$HOME/.config/bashquote/\$QUOTEFILE)" >> $HOME/.bashrc
+            echo "QUOTE=\$(tail -n+2 \$HOME/.config/bashquote/\$QUOTEFILE | shuf -n 1)" >> $HOME/.bashrc
             echo "COLUMNS=\$(tput cols)" >> $HOME/.bashrc
-            echo "printf \"\n%*s\n\n\" \$(((\${#QUOTE}+\$COLUMNS)/2)) \"✝ \$QUOTE ✝\"" >> $HOME/.bashrc
+            echo "printf \"\n%*s\n\n\" \$(((\${#QUOTE}+\$COLUMNS)/2)) \"\$SYMBOL \$QUOTE \$SYMBOL\"" >> $HOME/.bashrc
         else 
             line=$(awk '/QUOTEFILE=/{ print NR; exit }' $HOME/.bashrc) 
             sed -iE "$line s/QUOTEFILE=\(.*\)/QUOTEFILE=$2.txt/g" $HOME/.bashrc
@@ -32,6 +38,6 @@ if [[ $1 == "set" ]] then
         fi
     else
         echo "$2 is not a valid quotes file."
-        echo "Do \"bashquote list\" to see existing quotes file."
+        echo "try \"bashquote list\" to see existing quotes file."
     fi
 fi
