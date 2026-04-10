@@ -2,7 +2,7 @@
 
 ```bashquote help```       : show help
 
-```bashquote set <name>``` : select a quotes file
+```bashquote set <name> [shell]``` : select a quotes file for a shell (`bash` or `zsh`)
 
 ```bashquote list```       : list all available quotes files
 
@@ -11,6 +11,14 @@
     and the first line of the file is reserved for the symbol that will be used as a prefix and suffix
 
 ## Installation
+```
+
+If `[shell]` is not provided, `bashquote` automatically uses your current shell (from `$SHELL`).
+
+Examples:
+```
+bashquote set stoic
+bashquote set stoic zsh
 ```
 git clone https://github.com/Harbiinger/bashquote.git && cd bashquote
 ./install.sh
