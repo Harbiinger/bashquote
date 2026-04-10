@@ -6,9 +6,9 @@ if [[ $1 == "" ]]; then
 fi
 
 if [[ $1 == "help" ]]; then
-    echo "bashquote help       : show help"
-    echo "bashquote set <name> : select a quotes file"
-    echo "bashquote list       : list all available quotes files"
+    echo "bashquote help               : show help"
+    echo "bashquote set <name> [shell] : select a quotes file for a shell (auto-detect if omitted)"
+    echo "bashquote list               : list all available quotes files"
     echo "note: you can add your quotes files with a .txt extension in ~/.config/bashquote/"
     echo "      each quote must be on a single line"
     echo "      the first line of the file is reserved for the symbol that will be used as a prefix and suffix"
@@ -21,20 +21,40 @@ if [[ $1 == "list" ]]; then
 fi
 
 if [[ $1 == "set" ]]; then
+    get_rc_file() {
+        case "$1" in
+            bash) echo "$HOME/.bashrc" ;;
+            zsh) echo "$HOME/.zshrc" ;;
+            *) echo "" ;;
+        esac
+    }
+
     if [[ -f $path/$2.txt ]]; then
-        bashrc=$(grep -o -m 1 "bashquote" $HOME/.bashrc)
-        if [[ "" == $bashrc ]]; then
-            echo "writing config in your .bashrc" 
-            echo "# managed by bashquote" >> $HOME/.bashrc
-            echo "QUOTEFILE=$2.txt" >> $HOME/.bashrc
-            echo "SYMBOL=\$(head -n 1 \$HOME/.config/bashquote/\$QUOTEFILE)" >> $HOME/.bashrc
-            echo "QUOTE=\$(tail -n+2 \$HOME/.config/bashquote/\$QUOTEFILE | shuf -n 1)" >> $HOME/.bashrc
-            echo "COLUMNS=\$(tput cols)" >> $HOME/.bashrc
-            echo "printf \"\n%*s\n\n\" \$(((\${#QUOTE}+\$COLUMNS)/2)) \"\$SYMBOL \$QUOTE \$SYMBOL\"" >> $HOME/.bashrc
+        shell_name=$3
+        if [[ -z $shell_name ]]; then
+            shell_name=$(basename "$SHELL")
+        fi
+        rc_file=$(get_rc_file "$shell_name")
+
+        if [[ -z $rc_file ]]; then
+            echo "$shell_name is not supported yet."
+            echo "supported shells: bash, zsh"
+            exit 1
+        fi
+
+        shell_config=$(grep -o -m 1 "bashquote" "$rc_file")
+        if [[ "" == $shell_config ]]; then
+            echo "writing config in your ${rc_file##*/}"
+            echo "# managed by bashquote" >> "$rc_file"
+            echo "QUOTEFILE=$2.txt" >> "$rc_file"
+            echo "SYMBOL=\$(head -n 1 \$HOME/.config/bashquote/\$QUOTEFILE)" >> "$rc_file"
+            echo "QUOTE=\$(tail -n+2 \$HOME/.config/bashquote/\$QUOTEFILE | shuf -n 1)" >> "$rc_file"
+            echo "COLUMNS=\$(tput cols)" >> "$rc_file"
+            echo "printf \"\n%*s\n\n\" \$(((\${#QUOTE}+\$COLUMNS)/2)) \"\$SYMBOL \$QUOTE \$SYMBOL\"" >> "$rc_file"
         else 
-            line=$(awk '/QUOTEFILE=/{ print NR; exit }' $HOME/.bashrc) 
-            sed -iE "$line s/QUOTEFILE=\(.*\)/QUOTEFILE=$2.txt/g" $HOME/.bashrc
-            echo "Quotes file has been changed."
+            line=$(awk '/QUOTEFILE=/{ print NR; exit }' "$rc_file")
+            sed -iE "$line s/QUOTEFILE=\(.*\)/QUOTEFILE=$2.txt/g" "$rc_file"
+            echo "Quotes file has been changed in ${rc_file##*/}."
         fi
     else
         echo "$2 is not a valid quotes file."
