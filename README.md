@@ -2,7 +2,8 @@
 
 ```bashquote help```       : show help
 
-```bashquote set <name> [shell]``` : select a quotes file for a shell (`bash` or `zsh`)
+```bashquote set <name> [shell]``` : select a quotes file for a shell (`bash` or `zsh`)  
+> If `[shell]` is not provided, `bashquote` automatically uses your current shell (from `$SHELL`).
 
 ```bashquote list```       : list all available quotes files
 
@@ -12,18 +13,9 @@
 
 ## Installation
 ```
-
-If `[shell]` is not provided, `bashquote` automatically uses your current shell (from `$SHELL`).
-
-Examples:
-```
-bashquote set stoic
-bashquote set stoic zsh
-```
 git clone https://github.com/Harbiinger/bashquote.git && cd bashquote
 ./install.sh
 ```
-
 ## Update
 ```
 git pull 
