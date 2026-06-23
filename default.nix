@@ -4,12 +4,7 @@ pkgs.stdenv.mkDerivation {
   pname = "bashquote";
   version = "1.0.0";
 
-  src = pkgs.fetchFromGitHub {
-    owner = "harbiinger";
-    repo = "bashquote";
-    rev = "main";
-    hash = "sha256-QwbT1LTr6olulhkLRLgzl0ew3jTRPawApgc9FCym0iQ=";
-  };
+  src = ./.;
 
   nativeBuildInputs = [ pkgs. makeWrapper ];
 
