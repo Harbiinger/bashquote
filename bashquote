@@ -1,6 +1,11 @@
 #!/bin/bash
 path="$HOME/.config/bashquote/"
 
+if [ ! -d "$HOME/.config/bashquote" ]; then 
+  mkdir -p "$HOME/.config/bashquote" 
+  cp -r '"$out"'/share/bashquote/quotes/* "$HOME/.config/bashquote/" 
+fi 
+
 if [[ $1 == "" ]]; then
     bashquote help
 fi
